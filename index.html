@@ -135,6 +135,10 @@ textarea{min-height:150px;resize:vertical;line-height:1.5}
 .letter.on .hero>*:nth-child(3){animation-delay:.55s}.letter.on .hero>*:nth-child(4){animation-delay:.8s}
 .letter.on .hero>*:nth-child(5){animation-delay:.95s}.letter.on .hero>*:nth-child(6){animation-delay:1.1s}
 .copy{border-left:0;position:relative}
+.cid{margin:-14px 0 26px;font-size:14px;letter-spacing:.06em;color:var(--slate)}
+.cid b{font-weight:700;color:var(--teal);letter-spacing:.08em}
+body.dark #s0 .cid{color:rgba(234,255,254,.62)}
+body.dark #s0 .cid b{color:#fff}
 .copy::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:2px;background:linear-gradient(var(--bright),rgba(10,235,255,.15));transform-origin:top;transform:scaleY(0);animation:grow 1.1s .7s cubic-bezier(.6,0,.2,1) forwards}
 @keyframes grow{to{transform:scaleY(1)}}
 .cta{position:relative;overflow:hidden;box-shadow:0 12px 30px -12px rgba(2,45,51,.55)}
@@ -200,6 +204,7 @@ body.dark .slashes g:nth-child(3){animation-delay:-3s}body.dark .slashes g:nth-c
     <div class="hero">
       <p class="date" id="date">November 2026</p>
       <h1 id="h0">Dear <span class="nm" id="nm1">valued customer</span>,</h1>
+      <p class="cid" id="cid" hidden></p>
       <div class="copy">
         <p>Thank you for choosing Sciart Finance for your investment needs this year. It has been a privilege to serve you.</p>
         <p>Before the year closes, we would value a few minutes of your time. Your answers will tell us what we are doing well, where we must do better, and how we can serve you better in the year ahead.</p>
@@ -528,6 +533,15 @@ body.dark .slashes g:nth-child(3){animation-delay:-3s}body.dark .slashes g:nth-c
     document.getElementById('start').hidden = true;
   }
   show(0);
+
+  // customer ID under the name: looked up privately by the saver from the email, never in the link
+  if(LIVE && email){
+    fetch(ENDPOINT,{method:'POST',body:JSON.stringify({lookup:true,email:email}),headers:{'Content-Type':'text/plain;charset=UTF-8'},mode:'cors'})
+      .then(function(r){ return r.json(); }).then(function(j){
+        if(j && j.customer_id){ var c=document.getElementById('cid'); c.textContent='Customer ID: '; var b=document.createElement('b'); b.textContent=j.customer_id; c.appendChild(b); c.hidden=false; }
+      }).catch(function(){});
+  }
+  if(!LIVE && P.get('cid')){ var c0=document.getElementById('cid'); c0.textContent='Customer ID: '; var b0=document.createElement('b'); b0.textContent=P.get('cid'); c0.appendChild(b0); c0.hidden=false; }
 })();
 </script>
 </body>
